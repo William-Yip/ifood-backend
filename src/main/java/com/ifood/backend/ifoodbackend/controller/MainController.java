@@ -25,13 +25,8 @@ public class MainController {
 
         CityQuery city = new CityQuery();
 
-        System.out.println(cityName);
         city.setName(cityName);
-
-        System.out.println(lat);
         city.setLat(lat);
-
-        System.out.println(lon);
         city.setLon(lon);
 
         List<String> tracks = mainService.findTrackByCity(city);
