@@ -1,17 +1,22 @@
 package com.ifood.backend.ifoodbackend.service;
 
+import com.ifood.backend.ifoodbackend.InvalidParameterException;
 import com.ifood.backend.ifoodbackend.dto.CityQuery;
 import com.ifood.backend.ifoodbackend.dto.spotify.response.SpotifySearchResponseDTO;
 import com.ifood.backend.ifoodbackend.dto.weather.response.WeatherResponseDTO;
+import com.ifood.backend.ifoodbackend.validator.CityQueryValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import static java.lang.String.format;
@@ -29,10 +34,21 @@ public class MainService {
     private final String API_ID = "b77e07f479efe92156376a8b07640ced";
     private final String WEATHER_BASE_URL = String.format("http://api.openweathermap.org/data/2.5/weather?appid=%s&units=metric", API_ID);
 
+    @Autowired
+    CityQueryValidator validator;
+
+    public void test (CityQuery cityQuery) {
+        BeanPropertyBindingResult errors = new BeanPropertyBindingResult(cityQuery, cityQuery.getClass().toString().toLowerCase() );
+
+        validator.validate(cityQuery, errors);
+
+
+        System.out.println("Yeah");
+    }
+
     public List<String> findTrackByCity(CityQuery city) {
 
-        // TODO
-        //  - validate here CityQuery
+        validateCityQuery(city);
 
         try {
 
@@ -98,6 +114,17 @@ public class MainService {
         });
 
         return tracks;
+    }
+
+    private void validateCityQuery(CityQuery city) {
+
+        BeanPropertyBindingResult errors = new BeanPropertyBindingResult(city, city.getClass().getSimpleName().toLowerCase() );
+
+        validator.validate(city, errors);
+
+        if (errors.hasErrors())
+            throw new InvalidParameterException(errors);
+
     }
 
 }

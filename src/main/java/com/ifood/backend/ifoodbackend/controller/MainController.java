@@ -1,13 +1,12 @@
 package com.ifood.backend.ifoodbackend.controller;
 
+import com.ifood.backend.ifoodbackend.InvalidParameterException;
 import com.ifood.backend.ifoodbackend.dto.CityQuery;
 import com.ifood.backend.ifoodbackend.service.MainService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,6 +31,18 @@ public class MainController {
         List<String> tracks = mainService.findTrackByCity(city);
 
         return ResponseEntity.ok(tracks);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleException (Exception ex) {
+        System.out.println();
+        if (ex instanceof InvalidParameterException) {
+            InvalidParameterException invalidParameter = (InvalidParameterException) ex;
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(invalidParameter.getFields());
+        }
+
+        return ResponseEntity.internalServerError().body("Unknow error");
     }
 
 }
