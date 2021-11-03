@@ -24,8 +24,7 @@ public class CityQueryValidator implements Validator {
 
         String name = cityQuery.getName();
 
-        Boolean validName = Objects.nonNull(name) && name.trim().isEmpty();
-//        Boolean validName = Objects.nonNull(name) && !name.trim().isEmpty();
+        Boolean validName = Objects.nonNull(name) && !name.trim().isEmpty();
         Double lat = cityQuery.getLat();
         Double lon = cityQuery.getLon();
 
