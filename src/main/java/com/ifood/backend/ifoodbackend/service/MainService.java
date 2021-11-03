@@ -50,7 +50,7 @@ public class MainService {
 
             String uri = WEATHER_BASE_URL + buildWeatherArgs(city);
 
-            WeatherResponseDTO response = restTemplate.exchange(uri, HttpMethod.GET, null, WeatherResponseDTO.class).getBody();
+            WeatherResponseDTO response = restTemplate.getForEntity(uri, WeatherResponseDTO.class).getBody();
 
             Double temperature = response.getMain().getTemp();
             String country = response.getSys().getCountry();
