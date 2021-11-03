@@ -1,5 +1,7 @@
 package com.ifood.backend.ifoodbackend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ifood.backend.ifoodbackend.InvalidParameterException;
 import com.ifood.backend.ifoodbackend.dto.CityQuery;
 import com.ifood.backend.ifoodbackend.dto.spotify.response.SpotifySearchResponseDTO;
@@ -11,18 +13,21 @@ import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.Validator;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import static java.lang.String.format;
 
 @Service
 public class MainService {
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Autowired
     RestTemplate restTemplate;
@@ -37,16 +42,7 @@ public class MainService {
     @Autowired
     CityQueryValidator validator;
 
-    public void test (CityQuery cityQuery) {
-        BeanPropertyBindingResult errors = new BeanPropertyBindingResult(cityQuery, cityQuery.getClass().toString().toLowerCase() );
-
-        validator.validate(cityQuery, errors);
-
-
-        System.out.println("Yeah");
-    }
-
-    public List<String> findTrackByCity(CityQuery city) {
+    public List<String> findTrackByCity(CityQuery city) throws Exception {
 
         validateCityQuery(city);
 
@@ -64,13 +60,27 @@ public class MainService {
             return findTracksByGenre(genre, country);
         }
 
-        catch (Exception ex) {
-            System.out.println(ex);
-            ex.printStackTrace();
+        catch (HttpClientErrorException ex) {
+
+            String error = ex.getResponseBodyAsString();
+
+            Message message = null;
+
+            try {
+                message = objectMapper.readValue(error, Message.class);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                throw new Exception("Internal server error");
+            }
+
+            InvalidParameterException invalidParameterException = new InvalidParameterException(message.getMessage());
+            invalidParameterException.setStatus(ex.getStatusCode());
+
+            throw invalidParameterException;
         }
 
-        return new ArrayList<>();
     }
+
 
     private String buildWeatherArgs(CityQuery city) {
 
@@ -125,6 +135,20 @@ public class MainService {
         if (errors.hasErrors())
             throw new InvalidParameterException(errors);
 
+    }
+
+}
+
+class Message {
+
+    private String message;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
 }

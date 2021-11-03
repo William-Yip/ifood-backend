@@ -20,7 +20,7 @@ public class MainController {
     @GetMapping
     public ResponseEntity findTracksByCity(@RequestParam(required = false, name = "city_name") String cityName,
                                @RequestParam(required = false) Double lat,
-                               @RequestParam(required = false) Double lon) {
+                               @RequestParam(required = false) Double lon) throws Exception {
 
         CityQuery city = new CityQuery();
 
@@ -39,7 +39,7 @@ public class MainController {
         if (ex instanceof InvalidParameterException) {
             InvalidParameterException invalidParameter = (InvalidParameterException) ex;
 
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(invalidParameter.getFields());
+            return ResponseEntity.status(invalidParameter.getStatus()).body(invalidParameter.getFields());
         }
 
         return ResponseEntity.internalServerError().body("Unknow error");

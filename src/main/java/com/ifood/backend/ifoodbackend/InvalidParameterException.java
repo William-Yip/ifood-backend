@@ -1,6 +1,7 @@
 package com.ifood.backend.ifoodbackend;
 
 
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 
@@ -9,10 +10,14 @@ import java.util.List;
 
 public class InvalidParameterException extends RuntimeException {
 
-    private List<String> fields;
+    private List<String> fields = new ArrayList<>();
+    private HttpStatus status = HttpStatus.BAD_REQUEST;
+
+    public InvalidParameterException(String simpleError) {
+        fields.add(simpleError);
+    }
 
     public InvalidParameterException(Errors errors) {
-        fields = new ArrayList<>();
 
         List<ObjectError> allErrors = errors.getAllErrors();
 
@@ -21,6 +26,14 @@ public class InvalidParameterException extends RuntimeException {
 
     public List<String> getFields() {
         return fields;
+    }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(HttpStatus status) {
+        this.status = status;
     }
 
 }
