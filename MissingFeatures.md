@@ -9,9 +9,10 @@
     - [x] Get spotify client credentials
   - [x] Dockerize the app
     - [x] Externalize client credentials
+- [x] Handle errors - city not found, invalid parameter/request ( lat, lon )
  
 ### Todo - Extra
 
-- [ ] Handle errors - city not found, invalid parameter/request ( lat, lon )
-- [ ] TDD
+- [ ] Tests
 - [ ] Swagger
+- [ ] ReadMe
