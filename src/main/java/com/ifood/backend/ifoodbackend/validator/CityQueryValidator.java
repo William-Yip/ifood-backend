@@ -30,7 +30,7 @@ public class CityQueryValidator implements Validator {
 
 
         if ( !validName && Objects.isNull(lat) && Objects.isNull(lon) ) {
-            errors.reject(INVALID_PARAMETER, "must provide city's name or its coordinates(lat and lon)");
+            errors.reject(INVALID_PARAMETER, "must provide city's name or its coordinates (lat and lon) ");
             return;
         }
 

@@ -8,13 +8,12 @@ import com.ifood.backend.ifoodbackend.dto.spotify.response.SpotifySearchResponse
 import com.ifood.backend.ifoodbackend.dto.weather.response.WeatherResponseDTO;
 import com.ifood.backend.ifoodbackend.validator.CityQueryValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -35,12 +34,20 @@ public class MainService {
     @Autowired
     OAuth2RestTemplate oAuth2RestTemplate;
 
-    private final String SPOTIFY_SEARCH_BASE_URL = "https://api.spotify.com/v1/recommendations?seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_tracks=0c6xIDDpzE81m2q797ordA&seed_genres={genre}&market={market}&limit=10";
-    private final String API_ID = "b77e07f479efe92156376a8b07640ced";
-    private final String WEATHER_BASE_URL = String.format("http://api.openweathermap.org/data/2.5/weather?appid=%s&units=metric", API_ID);
+    private final String SPOTIFY_SEARCH_BASE_URL;
+
+    private final String API_ID;
+
+    private final String WEATHER_BASE_URL;
 
     @Autowired
     CityQueryValidator validator;
+
+    public MainService( @Value("${spotifyUrl}") String spotifyUrl, @Value("${weatherAppId}") String appId) {
+        API_ID = appId;
+        SPOTIFY_SEARCH_BASE_URL = spotifyUrl;
+        WEATHER_BASE_URL = String.format("http://api.openweathermap.org/data/2.5/weather?appid=%s&units=metric", API_ID);
+    }
 
     public List<String> findTrackByCity(CityQuery city) throws Exception {
 
@@ -80,7 +87,6 @@ public class MainService {
         }
 
     }
-
 
     private String buildWeatherArgs(CityQuery city) {
 
@@ -134,14 +140,22 @@ public class MainService {
 
         if (errors.hasErrors())
             throw new InvalidParameterException(errors);
-
     }
 
 }
 
 class Message {
 
+    private String cod;
     private String message;
+
+    public String getCod() {
+        return cod;
+    }
+
+    public void setCod(String cod) {
+        this.cod = cod;
+    }
 
     public String getMessage() {
         return message;

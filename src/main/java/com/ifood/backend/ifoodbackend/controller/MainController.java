@@ -18,7 +18,8 @@ public class MainController {
     MainService mainService;
 
     @GetMapping
-    public ResponseEntity findTracksByCity(@RequestParam(required = false, name = "city_name") String cityName,
+    public ResponseEntity findTracksByCity(
+                               @RequestParam(required = false, name = "city_name") String cityName,
                                @RequestParam(required = false) Double lat,
                                @RequestParam(required = false) Double lon) throws Exception {
 
