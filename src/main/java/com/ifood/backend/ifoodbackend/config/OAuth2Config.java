@@ -8,7 +8,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Objects;
 
 @EnableOAuth2Client
@@ -26,14 +28,16 @@ public class OAuth2Config {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2Config.class);
 
-    static {
+    @PostConstruct
+    private void validateEnvVars() {
 
         CLIENT_ID = System.getenv(CLIENT_ID_NAME);
-        if ( Objects.isNull(CLIENT_ID) && "".equals(CLIENT_ID) ) {
+
+        if ( Objects.isNull(CLIENT_ID) || "".equals(CLIENT_ID) ) {
             throw new IllegalStateException(String.format("%s env var must be provided", CLIENT_ID_NAME));
         }
         CLIENT_SECRET = System.getenv(CLIENT_SECRET_NAME);
-        if ( Objects.isNull(CLIENT_SECRET) && "".equals(CLIENT_SECRET) ) {
+        if ( Objects.isNull(CLIENT_SECRET) || "".equals(CLIENT_SECRET) ) {
             throw new IllegalStateException(String.format("%s env var must be provided", CLIENT_SECRET_NAME));
         }
 
