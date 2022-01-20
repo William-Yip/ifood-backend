@@ -27,7 +27,7 @@ $ docker run -e clientId=<CLIENT_ID> -e clientSecret=<CLIENT_SECRET> -p 8080:808
 
 + **Request** `(application/json)`
 
-    + **Parameters** should be provided at least a city name or latitude with longitude
+    + **Parameters** should be provided at least a **city name** or **latitude with longitude**
      
       + `city_name` (string, optional) - A valid city name from all over the world
       + `lat` (double, optional) - latitude from the city searched
