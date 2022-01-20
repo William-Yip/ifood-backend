@@ -39,6 +39,7 @@ $ docker run -e clientId=<CLIENT_ID> -e clientSecret=<CLIENT_SECRET> -p 8080:808
 
 
     body (example):
+
           [
             "Goodness Gracious",
             "All My Friends (feat. Tinashe & Chance the Rapper)",
