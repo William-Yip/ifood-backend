@@ -13,6 +13,5 @@
  
 ### Todo - Extra
 
-- [ ] Tests
-- [ ] Swagger
 - [ ] ReadMe
+- [ ] Tests

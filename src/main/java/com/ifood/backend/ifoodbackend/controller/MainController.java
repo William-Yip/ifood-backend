@@ -4,7 +4,6 @@ import com.ifood.backend.ifoodbackend.InvalidParameterException;
 import com.ifood.backend.ifoodbackend.dto.CityQuery;
 import com.ifood.backend.ifoodbackend.service.MainService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +35,7 @@ public class MainController {
 
     @ExceptionHandler
     public ResponseEntity handleException (Exception ex) {
-        System.out.println();
+
         if (ex instanceof InvalidParameterException) {
             InvalidParameterException invalidParameter = (InvalidParameterException) ex;
 

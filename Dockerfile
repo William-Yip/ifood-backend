@@ -1,10 +1,12 @@
-FROM openjdk:8-jdk-alpine
+FROM adoptopenjdk/maven-openjdk8
 
-ARG JAR_FILE=target/*.jar
+WORKDIR app/
+
+COPY . .
+
+RUN mvn clean package
 
 ENV clientId ""
 ENV clientSecret ""
 
-COPY ${JAR_FILE} app.jar
-
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-jar", "/app/target/ifoodbackend-0.0.1-SNAPSHOT.jar"]
